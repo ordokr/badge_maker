@@ -1,6 +1,5 @@
 Here’s a basic template for your README file for the BadgeMaker plugin:
 
-```markdown
 # BadgeMaker Plugin
 
 ## Description
