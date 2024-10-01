@@ -1,0 +1,10 @@
+<h1>Gamification Badges</h1>
+
+<ul>
+  <% @badges.each do |badge| %>
+    <li>
+      <h2><%= badge.name %></h2>
+      <p><%= badge.description %></p>
+    </li>
+  <% end %>
+</ul>
