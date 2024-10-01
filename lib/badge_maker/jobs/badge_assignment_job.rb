@@ -1,68 +1,54 @@
-# frozen_string_literal: true
+# lib/badge_maker/jobs/badge_assignment_job.rb
 
-module BadgeMaker
-  class BadgeAssignmentJob < ::Jobs::Base
-    def execute(args)
-      user = User.find(args[:user_id])
-      assign_badges(user)
+class BadgeAssignmentJob < ApplicationJob
+  queue_as :default
+
+  def perform(user)
+    assign_badge_based_on_email(user)
+    assign_monthly_top_contributors
+    assign_superstar_badge(user)
+    assign_badge_for_twitter_signup(user)
+    assign_badge_for_answering_questions(user)
+  end
+
+  private
+
+  def assign_badge_based_on_email(user)
+    if user.email.ends_with?("@domain.com")
+      badge = Badge.find_by(name: "Domain Badge")
+      user.badges << badge if badge
     end
+  end
 
-    private
+  def assign_monthly_top_contributors
+    top_contributors = User.order('score DESC').limit(10) # Replace score with actual points
+    badge = Badge.find_by(name: "Top Contributor")
 
-    def assign_badges(user)
-      assign_badge_based_on_email(user)
-      assign_top_contributor_badges
-      assign_badge_based_on_role(user)
-      assign_badge_based_on_auth(user)
-      assign_badge_based_on_answers(user)
+    top_contributors.each do |user|
+      user.badges << badge if badge
     end
+  end
 
-    def assign_badge_based_on_email(user)
-      if user.email.ends_with?("@domain.com")
-        badge = Badge.find_by(name: "Domain Badge")
-        assign_badge(user, badge) if badge
-      end
+  def assign_superstar_badge(user)
+    if user.has_role?("community_superstar")
+      badge = Badge.find_by(name: "Community Superstar")
+      user.badges << badge if badge
     end
+  end
 
-    def assign_top_contributor_badges
-      top_contributors = User.joins(:posts)
-                             .group("users.id")
-                             .order("COUNT(posts.id) DESC")
-                             .limit(X) # Replace X with the number of top contributors you want
-      top_contributors.each do |contributor|
-        badge = Badge.find_by(name: "Top Contributor")
-        assign_badge(contributor, badge) if badge
-      end
+  def assign_badge_for_twitter_signup(user)
+    if user.authentications.any? { |auth| auth.provider == "twitter" }
+      badge = Badge.find_by(name: "Twitter Sign-up")
+      user.badges << badge if badge
     end
+  end
 
-    def assign_badge_based_on_role(user)
-      if user.has_trust_level?(4) # Community superstar role
-        badge = Badge.find_by(name: "Community Superstar")
-        assign_badge(user, badge) if badge
-      end
-    end
+  def assign_badge_for_answering_questions(user)
+    answered_questions_count = Post.where(user_id: user.id, topic_id: Category.find_by(name: 'Specific Subject').topics).count
 
-    def assign_badge_based_on_auth(user)
-      if user.auth_method == "twitter" # Adjust this based on your auth methods
-        badge = Badge.find_by(name: "Twitter Sign-Up")
-        assign_badge(user, badge) if badge
-      end
-    end
-
-    def assign_badge_based_on_answers(user)
-      answered_questions = user.posts.where(topic_id: specific_topic_id) # Adjust for the subject/topic
-      if answered_questions.count >= X # Replace X with the required number of answers
-        badge = Badge.find_by(name: "Answering Guru")
-        assign_badge(user, badge) if badge
-      end
-    end
-
-    def assign_badge(user, badge)
-      # Logic to assign the badge to the user
-      if badge.present?
-        # This is where you would create the relationship or whatever method you have to award the badge
-        BadgeUser.create!(user: user, badge: badge)
-      end
+    if answered_questions_count >= 10
+      badge = Badge.find_by(name: "Question Expert")
+      user.badges << badge if badge
     end
   end
 end
