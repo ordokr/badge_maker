@@ -3,5 +3,5 @@ BadgeMaker::Engine.routes.draw do
 end
 
 Discourse::Application.routes.draw do
-  mount ::BadgeMaker::Engine, at: '/badge_maker', as: 'badge_maker_plugin'  # Changed from 'custom_badge_maker'
+  mount ::BadgeMaker::Engine, at: '/badge_maker', as: 'badge_maker_engine'
 end
