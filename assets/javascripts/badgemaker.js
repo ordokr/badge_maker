@@ -1,5 +1,4 @@
 import { api } from "discourse/lib/api";
-import { addObserver } from "discourse-common/lib/object-observer";
 
 export default {
   initialize() {
@@ -7,8 +6,8 @@ export default {
       // Play sound or display notification
       console.log(`Badge earned: ${badge.name}`);
       
-      // Example logic to play sound
-      const audio = new Audio('/path/to/ding.mp3');
+      // Logic to play sound from the correct path
+      const audio = new Audio('/sounds/ding.mp3');
       audio.play();
 
       // Optionally, show a notification to the user
