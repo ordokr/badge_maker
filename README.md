@@ -1,4 +1,4 @@
-# **Gamify badges** Plugin
+# **Discourse badge maker** Plugin
 
 **Plugin Summary**
 
