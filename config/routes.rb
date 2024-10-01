@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 BadgeMaker::Engine.routes.draw do
-  get "/badges" => "badges#index", as: :badges
+  resources :badges, only: [:index, :create, :show]
 end
 
 Discourse::Application.routes.draw do
