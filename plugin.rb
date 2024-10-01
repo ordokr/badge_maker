@@ -1,21 +1,16 @@
 # frozen_string_literal: true
 
-# name: discourse-plugin-name
-# about: TODO
-# meta_topic_id: TODO
-# version: 0.0.1
-# authors: Discourse
-# url: TODO
+# name: badge-maker
+# about: A plugin to award badges based on user achievements
+# version: 0.1.0
+# authors: Your Name
+# url: http://yourpluginurl.com
 # required_version: 2.7.0
 
-enabled_site_setting :plugin_name_enabled
+enabled_site_setting :badge_maker_enabled
 
-module ::MyPluginModule
-  PLUGIN_NAME = "discourse-plugin-name"
-end
-
-require_relative "lib/my_plugin_module/engine"
+require_relative "lib/badge_maker/engine"
 
 after_initialize do
-  # Code which should run after Rails has finished booting
+  # Any code to run after Discourse has finished booting
 end
