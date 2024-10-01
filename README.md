@@ -1,4 +1,4 @@
-# **Plugin Name** Plugin
+# **Gamify badges** Plugin
 
 **Plugin Summary**
 
